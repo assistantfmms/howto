@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Pacing Tracker — Technical Overview</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap');
+:root{
+  --navy:#1a2d6b;--navy-dark:#111d4a;--navy-light:#e8ecf7;
+  --orange:#F47920;--orange-light:#fff3eb;
+  --dark:#1a1a1a;--mid:#444;--light:#f7f7f7;--border:#e0e0e0;
+  --green:#2e7d32;--green-light:#e8f5e9;
+  --blue:#1565c0;--blue-light:#e3f2fd;
+  --red:#c62828;--red-light:#ffebee;
+  --white:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif;background:var(--light);color:var(--dark);font-size:18px;line-height:1.6}
+header{background:var(--navy-dark);padding:28px 40px;display:flex;align-items:center;gap:20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.logo-mark{width:44px;height:44px;background:var(--navy);border:2px solid var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:white;flex-shrink:0}
+header h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;color:white;letter-spacing:.5px}
+header p{font-size:13px;color:#aaa;margin-top:2px}
+nav{background:white;border-bottom:2px solid var(--orange);padding:0 40px;display:flex;gap:0;overflow-x:auto}
+nav a{display:block;padding:14px 20px;font-size:14px;font-weight:600;color:var(--mid);text-decoration:none;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s}
+nav a:hover{color:var(--orange);border-bottom-color:var(--orange)}
+.container{max-width:1140px;margin:0 auto;padding:48px 24px 80px}
+.intro-banner{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 70%);color:white;border-radius:12px;padding:36px 40px;margin-bottom:48px;position:relative;overflow:hidden}
+.intro-banner::before{content:'';position:absolute;top:0;right:0;width:200px;height:100%;background:linear-gradient(135deg,transparent 40%,rgba(244,121,32,.15))}
+.intro-banner h2{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;margin-bottom:10px;color:var(--orange)}
+.intro-banner p{font-size:15px;color:#dbe0f2;max-width:640px;line-height:1.7}
+.section{margin-bottom:56px;scroll-margin-top:80px}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:14px;border-bottom:2px solid var(--border)}
+.section-num{width:36px;height:36px;background:var(--navy);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;flex-shrink:0}
+.section h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:var(--dark)}
+.section p{margin-bottom:12px}
+.steps{display:flex;flex-direction:column;gap:14px}
+.step{background:white;border:1px solid var(--border);border-radius:10px;padding:18px 22px;display:flex;gap:16px;align-items:flex-start}
+.step-num{width:26px;height:26px;background:var(--orange);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:2px}
+.step-body p{font-size:15px;color:var(--dark);line-height:1.6;margin:0}
+.callout{border-radius:8px;padding:16px 20px;margin-top:16px;font-size:14px;display:flex;gap:12px;align-items:flex-start}
+.callout.tip{background:var(--blue-light);color:var(--blue)}
+.callout.important{background:var(--red-light);color:var(--red)}
+.callout-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.callout p{font-size:14px;line-height:1.6;margin:0}
+.info-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
+.info-table th{background:var(--navy-dark);color:white;padding:10px 14px;text-align:left;font-weight:600}
+.info-table td{padding:10px 14px;border-bottom:1px solid var(--border);background:white;vertical-align:top}
+.info-table tr:last-child td{border-bottom:none}
+.field-name{font-family:'Courier New',monospace;color:var(--orange);font-weight:bold;font-size:13px}
+.mono-block{background:var(--navy-dark);color:#e8ecf7;border-radius:8px;padding:16px 20px;font-family:'Courier New',monospace;font-size:13px;line-height:1.7;margin-top:10px}
+ul.plain{margin:8px 0 0 20px}
+ul.plain li{font-size:15px;color:var(--mid);margin-bottom:8px;line-height:1.6}
+footer{background:var(--navy-dark);color:#8a94b8;text-align:center;padding:24px;font-size:13px}
+footer span{color:var(--orange)}
+@media(max-width:600px){header{padding:20px}.container{padding:28px 16px 60px}.intro-banner{padding:24px 20px}nav{padding:0 16px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">&lt;/&gt;</div>
+  <div>
+    <h1>Budget Pacing Tracker</h1>
+    <p>Jim's Group &middot; Technical Overview &middot; Internal use only</p>
+  </div>
+</header>
+
+<nav>
+  <a href="#summary">Summary</a>
+  <a href="#dataflow">Data Flow</a>
+  <a href="#platforms">Platforms</a>
+  <a href="#why">Why This Stack</a>
+  <a href="#where">Where Things Live</a>
+  <a href="#maintenance">Maintenance</a>
+</nav>
+
+<div class="container">
+
+  <div class="intro-banner">
+    <h2>Architecture and platforms.</h2>
+    <p>How the Budget Pacing Tracker is built, where the data flows from, and what to touch (and what not to touch) when maintaining it.</p>
+  </div>
+
+  <div class="section" id="summary">
+    <div class="section-header"><div class="section-num">1</div><h2>Summary</h2></div>
+    <p>The tracker is a lightweight, serverless application built entirely on Azure and Google Ads' own scripting feature. There's no third-party paid software involved, and no servers to patch or maintain — everything runs on managed platforms already in use elsewhere at FMMS, matching the pattern used for the Jim's Energy Pipeline Dashboard.</p>
+  </div>
+
+  <div class="section" id="dataflow">
+    <div class="section-header"><div class="section-num">2</div><h2>How Data Flows Through the System</h2></div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><p>Each Google Ads account runs a small script (<strong>Google Ads Scripts</strong> — a JavaScript feature built into every Google Ads account) on a daily schedule.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><p>The script queries that account's campaign cost data using <strong>Google Ads Query Language (GAQL)</strong>, covering the 1st of the month through the end of the previous day.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><p>It sends that data as JSON to a dedicated API endpoint, <span class="field-name">/api/ingest</span>, hosted on Azure.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><p>The API checks a shared secret key in the request header (rather than a human login, since a script can't sign in interactively), then merges the new figures into a single stored data record.</p></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><p>When someone opens the dashboard, it reads that same stored record, recalculates every campaign's pacing on the fly, and displays it.</p></div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-body"><p>Anyone using the dashboard directly (adding a campaign, editing a budget) writes back to the same record via a second endpoint, <span class="field-name">/api/data</span>, which does require a human sign-in.</p></div></div>
+    </div>
+    <div class="callout tip"><span class="callout-icon">💡</span><p>There are deliberately two separate endpoints with two different authentication methods — one for people (Entra ID login) and one for machines (a shared key) — because Google Ads Scripts has no way to complete an interactive sign-in.</p></div>
+  </div>
+
+  <div class="section" id="platforms">
+    <div class="section-header"><div class="section-num">3</div><h2>Platforms and Components</h2></div>
+    <table class="info-table">
+      <thead><tr><th>Layer</th><th>Platform</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Hosting</strong></td><td>Azure Static Web Apps (Free tier)</td><td>Serves the dashboard and hosts its API as one deployed unit.</td></tr>
+        <tr><td><strong>Backend API</strong></td><td>Azure Functions (Node.js, v4)</td><td>Two HTTP endpoints: /api/data (human read/write) and /api/ingest (automated push).</td></tr>
+        <tr><td><strong>Data storage</strong></td><td>Azure Table Storage</td><td>A single JSON record holding every account, campaign, budget, and spend history entry.</td></tr>
+        <tr><td><strong>People sign-in</strong></td><td>Microsoft Entra ID</td><td>Built into Static Web Apps; access limited to an approved email allow-list.</td></tr>
+        <tr><td><strong>Automation sign-in</strong></td><td>Shared API key</td><td>A secret string checked by /api/ingest, since scripts can't do an interactive login.</td></tr>
+        <tr><td><strong>Data source</strong></td><td>Google Ads Scripts</td><td>Native to each Google Ads account; no external hosting needed.</td></tr>
+        <tr><td><strong>Source control / CI-CD</strong></td><td>GitHub + GitHub Actions</td><td>Every push to main automatically rebuilds and redeploys the app.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section" id="why">
+    <div class="section-header"><div class="section-num">4</div><h2>Why This Stack</h2></div>
+    <ul class="plain">
+      <li>Matches the pattern already used for the Jim's Energy Pipeline Dashboard (Azure Static Web Apps, Entra ID, GitHub Actions), so it's familiar rather than another one-off tool.</li>
+      <li>No new recurring cost of note — Static Web Apps Free tier, a few cents a month of Table Storage for this volume of data, and Google Ads Scripts is free.</li>
+      <li>Nothing to patch, upgrade, or keep alive — all the compute is managed by Azure and Google.</li>
+    </ul>
+  </div>
+
+  <div class="section" id="where">
+    <div class="section-header"><div class="section-num">5</div><h2>Where Things Live</h2></div>
+    <ul class="plain">
+      <li><strong>Repository:</strong> github.com/assistantfmms/searchpacer</li>
+      <li><strong>Live dashboard:</strong> the Static Web App's azurestaticapps.net URL</li>
+      <li><strong>Azure resource group:</strong> searchpacer</li>
+      <li><strong>Storage account:</strong> searchpacerdata</li>
+    </ul>
+  </div>
+
+  <div class="section" id="maintenance">
+    <div class="section-header"><div class="section-num">6</div><h2>Maintenance Notes</h2></div>
+    <ul class="plain">
+      <li><strong>Adding a new approved person:</strong> update the <span class="field-name">ALLOWED_EMAILS</span> setting in the Static Web App's Environment variables (Azure Portal).</li>
+      <li><strong>Adding a new Google Ads account:</strong> install the script (<span class="field-name">google-ads-script-template.js</span>, in the repo) in that account, using an account name that either matches one already in the tracker or is a deliberate new one.</li>
+      <li><strong>Rotating the shared automation key:</strong> update <span class="field-name">INGEST_API_KEY</span> in Azure and in every installed Google Ads Script at the same time — they must all match.</li>
+      <li><strong>Changing the dashboard itself:</strong> edit <span class="field-name">index.html</span> in the repository and push to main — GitHub Actions rebuilds and redeploys automatically within a couple of minutes.</li>
+    </ul>
+    <div class="callout important"><span class="callout-icon">🔒</span><p>The <span class="field-name">/api/ingest</span> endpoint is the one intentionally-public route in the app — reachable without an Entra ID login, since Google Ads Scripts can't do interactive sign-in. It's protected instead by the shared key, so treat that key like any other credential.</p></div>
+  </div>
+
+</div>
+
+<footer>Budget Pacing Tracker &middot; Technical Overview &middot; <span>FMMS</span> &middot; For internal use only</footer>
+
+</body>
+</html>

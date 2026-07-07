@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Pacing Tracker — How-To Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap');
+:root{
+  --navy:#1a2d6b;--navy-dark:#111d4a;--navy-light:#e8ecf7;
+  --orange:#F47920;--orange-light:#fff3eb;
+  --dark:#1a1a1a;--mid:#444;--light:#f7f7f7;--border:#e0e0e0;
+  --green:#2e7d32;--green-light:#e8f5e9;
+  --blue:#1565c0;--blue-light:#e3f2fd;
+  --red:#c62828;--red-light:#ffebee;
+  --yellow:#f9a825;--yellow-light:#fffde7;
+  --white:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif;background:var(--light);color:var(--dark);font-size:18px;line-height:1.6}
+header{background:var(--navy-dark);padding:28px 40px;display:flex;align-items:center;gap:20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.logo-mark{width:44px;height:44px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:white;flex-shrink:0}
+header h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;color:white;letter-spacing:.5px}
+header p{font-size:13px;color:#aaa;margin-top:2px}
+nav{background:white;border-bottom:2px solid var(--orange);padding:0 40px;display:flex;gap:0;overflow-x:auto}
+nav a{display:block;padding:14px 20px;font-size:14px;font-weight:600;color:var(--mid);text-decoration:none;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s}
+nav a:hover{color:var(--orange);border-bottom-color:var(--orange)}
+.container{max-width:1140px;margin:0 auto;padding:48px 24px 80px}
+.intro-banner{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 70%);color:white;border-radius:12px;padding:36px 40px;margin-bottom:48px;position:relative;overflow:hidden}
+.intro-banner::before{content:'';position:absolute;top:0;right:0;width:200px;height:100%;background:linear-gradient(135deg,transparent 40%,rgba(244,121,32,.15))}
+.intro-banner h2{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;margin-bottom:10px;color:var(--orange)}
+.intro-banner p{font-size:15px;color:#dbe0f2;max-width:640px;line-height:1.7}
+.section{margin-bottom:56px;scroll-margin-top:80px}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:14px;border-bottom:2px solid var(--border)}
+.section-num{width:36px;height:36px;background:var(--navy);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;flex-shrink:0}
+.section h2{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:var(--dark)}
+.section h3{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--navy);margin:20px 0 10px}
+.section p{margin-bottom:12px}
+.steps{display:flex;flex-direction:column;gap:16px}
+.step{background:white;border:1px solid var(--border);border-radius:10px;padding:20px 24px;display:flex;gap:18px;align-items:flex-start}
+.step-num{width:28px;height:28px;background:var(--orange-light);color:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;margin-top:2px}
+.step-body h3{margin:0 0 6px;font-size:15px;font-weight:700;color:var(--dark);font-family:'Barlow',sans-serif}
+.step-body p{font-size:14px;color:var(--mid);line-height:1.6;margin:0}
+ul.plain{margin:8px 0 0 20px}
+ul.plain li{font-size:15px;color:var(--mid);margin-bottom:6px;line-height:1.6}
+.callout{border-radius:8px;padding:16px 20px;margin-top:16px;font-size:14px;display:flex;gap:12px;align-items:flex-start}
+.callout.tip{background:var(--blue-light);color:var(--blue)}
+.callout.warning{background:var(--yellow-light);color:#7c5a00}
+.callout.important{background:var(--red-light);color:var(--red)}
+.callout.good{background:var(--green-light);color:var(--green)}
+.callout-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.callout p{font-size:14px;line-height:1.6;margin:0}
+.info-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
+.info-table th{background:var(--navy-dark);color:white;padding:10px 14px;text-align:left;font-weight:600}
+.info-table td{padding:10px 14px;border-bottom:1px solid var(--border);background:white;vertical-align:top}
+.info-table tr:last-child td{border-bottom:none}
+.field-name{font-family:'Courier New',monospace;color:var(--orange);font-weight:bold}
+.metric-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:16px}
+.metric-card{background:white;border:1px solid var(--border);border-radius:8px;padding:16px;border-top:3px solid var(--orange)}
+.metric-card .metric-label{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px}
+.metric-card .metric-value{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:var(--dark);margin-top:4px}
+.metric-card .metric-desc{font-size:12px;color:#999;margin-top:4px}
+.label-chip{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;color:white;display:inline-block}
+.chip-warning{background:var(--red)}
+.chip-onpace{background:var(--green)}
+.chip-watch{background:#b8770f}
+.pacebar-demo{background:white;border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin-top:16px}
+.pacebar-track{position:relative;height:10px;border-radius:5px;background:var(--border);margin:10px 0 6px}
+.pacebar-fill{position:absolute;left:0;top:0;height:100%;border-radius:5px;background:var(--green)}
+.pacebar-marker{position:absolute;top:-4px;width:2px;height:18px;background:var(--dark);opacity:.55}
+.pacebar-label{font-size:12px;color:var(--mid);display:flex;justify-content:space-between}
+.faq-item{background:white;border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.faq-q{padding:16px 20px;font-weight:600;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.faq-q::after{content:"﹢";font-size:20px;color:var(--orange)}
+.faq-item.open .faq-q::after{content:"－"}
+.faq-a{display:none;padding:14px 20px 16px;font-size:14px;color:var(--mid);line-height:1.7;border-top:1px solid var(--border)}
+.faq-item.open .faq-a{display:block}
+footer{background:var(--navy-dark);color:#8a94b8;text-align:center;padding:24px;font-size:13px}
+footer span{color:var(--orange)}
+@media(max-width:600px){header{padding:20px}.container{padding:28px 16px 60px}.intro-banner{padding:24px 20px}nav{padding:0 16px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">BP</div>
+  <div>
+    <h1>Budget Pacing Tracker</h1>
+    <p>Jim's Group &middot; How-To Guide &middot; Internal use only</p>
+  </div>
+</header>
+
+<nav>
+  <a href="#overview">Overview</a>
+  <a href="#data-source">Where Data Comes From</a>
+  <a href="#pacing-math">The Pacing Maths</a>
+  <a href="#status">Status Colours</a>
+  <a href="#dashboard">Reading the Dashboard</a>
+  <a href="#managing">Managing Campaigns</a>
+  <a href="#faq">FAQs</a>
+</nav>
+
+<div class="container">
+
+  <div class="intro-banner">
+    <h2>Your spend tracking, explained simply.</h2>
+    <p>This guide walks through how the Budget Pacing Tracker works — where the numbers come from, how the pacing calculation is done, and how to read and manage the dashboard day to day. It covers every Google Ads campaign across Electrical, Energy, Antennas, and Security.</p>
+  </div>
+
+  <div class="section" id="overview">
+    <div class="section-header"><div class="section-num">1</div><h2>What This Tool Does</h2></div>
+    <p>The Budget Pacing Tracker is a live dashboard that shows, for every Google Ads campaign across all divisions, whether spend is on track against its budget for the current month — updated automatically every day, with no manual downloads required.</p>
+    <p>Think of it as an early-warning system: instead of finding out at the end of the month that a campaign massively overspent or barely spent at all, the dashboard flags it while there's still time to do something about it.</p>
+  </div>
+
+  <div class="section" id="data-source">
+    <div class="section-header"><div class="section-num">2</div><h2>Where the Data Comes From</h2></div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h3>A small automated script runs daily</h3><p>Each Google Ads account has a script installed that runs on a schedule (typically early morning), pulling each campaign's spend for the month automatically. No one needs to export, download, or upload anything.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h3>It reports through yesterday, not "right now"</h3><p>The script adds up spend through the end of the previous day — not including today, since today isn't finished yet. This keeps the pacing maths accurate rather than mixing in a partial, unfinished day.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h3>It sends the numbers straight to the tracker</h3><p>The figures are pushed automatically to the dashboard the moment the script finishes running — no waiting, no manual step in between.</p></div></div>
+    </div>
+    <div class="callout tip"><span class="callout-icon">💡</span><p>Because figures are reported through yesterday, the dashboard will always show something like "data as of day 6 of 31" — one day behind today's date. That's intentional, and keeps the numbers accurate rather than showing a half-finished day.</p></div>
+  </div>
+
+  <div class="section" id="pacing-math">
+    <div class="section-header"><div class="section-num">3</div><h2>How the Pacing Maths Works</h2></div>
+    <p>Each campaign has a <strong>Daily Budget</strong> set — the same figure that's actually configured in Google Ads for that campaign, not a monthly total. Everything else the tracker shows is worked out from that one number:</p>
+    <table class="info-table">
+      <thead><tr><th>Term</th><th>How it's calculated</th><th>What it tells you</th></tr></thead>
+      <tbody>
+        <tr><td><span class="field-name">Monthly cap</span></td><td>Daily budget &times; 30.4</td><td>What Google Ads itself won't exceed this month. 30.4 is Google's own average-days-per-month figure, used because calendar months vary from 28 to 31 days.</td></tr>
+        <tr><td><span class="field-name">Expected spend</span></td><td>Daily budget &times; days elapsed</td><td>"Where this campaign should be" as of yesterday.</td></tr>
+        <tr><td><span class="field-name">Pace %</span></td><td>Actual spend &divide; expected spend</td><td>How the campaign compares to that plan.</td></tr>
+      </tbody>
+    </table>
+    <div class="pacebar-demo">
+      <div style="font-size:14px;font-weight:600;color:var(--dark);">Example: a campaign right on target</div>
+      <div class="pacebar-track"><div class="pacebar-fill" style="width:42%;"></div><div class="pacebar-marker" style="left:42%;"></div></div>
+      <div class="pacebar-label"><span>Spend so far (fill)</span><span>Time elapsed (marker line)</span></div>
+    </div>
+    <div class="callout tip"><span class="callout-icon">💡</span><p>The tracker's pace bar shows this visually — the coloured fill is spend as a share of the monthly cap, and the vertical marker line shows how far through the month you are. If the fill passes the marker, the campaign is spending ahead of schedule.</p></div>
+    <div class="callout warning"><span class="callout-icon">⚠️</span><p>Because 30.4 is an average, campaigns will naturally read slightly "ahead" of pace late in a 31-day month, and slightly "behind" in a 28-day month, even with perfectly steady spend. That's expected drift, not a fault.</p></div>
+  </div>
+
+  <div class="section" id="status">
+    <div class="section-header"><div class="section-num">4</div><h2>What the Status Colours Mean</h2></div>
+    <table class="info-table">
+      <thead><tr><th>Status</th><th>Pace</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><span class="label-chip chip-warning">Warning</span></td><td>Over 100%</td><td>Spending faster than planned for this point in the month.</td></tr>
+        <tr><td><span class="label-chip chip-onpace">On pace</span></td><td>90% – 100%</td><td>Right on target — within normal day-to-day variation.</td></tr>
+        <tr><td><span class="label-chip chip-watch">Watch</span></td><td>Under 90%</td><td>Spending slower than planned — worth a look, not urgent on its own.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section" id="dashboard">
+    <div class="section-header"><div class="section-num">5</div><h2>Reading the Dashboard</h2></div>
+    <h3>Top bar</h3>
+    <ul class="plain">
+      <li><strong>Month</strong> — choose which calendar month to view. Defaults to the current month.</li>
+      <li><strong>Refresh</strong> — pulls the latest saved data, useful if a script has just run or someone else has updated something.</li>
+      <li><strong>Manage campaigns</strong> — add, edit, or remove campaigns and set their daily budgets.</li>
+    </ul>
+    <h3>Summary cards</h3>
+    <div class="metric-cards">
+      <div class="metric-card"><div class="metric-label">Monthly cap</div><div class="metric-value">$1,368</div><div class="metric-desc">Total of all campaigns' monthly caps</div></div>
+      <div class="metric-card"><div class="metric-label">Spent MTD</div><div class="metric-value">$5,162</div><div class="metric-desc">Actual spend this month, as of yesterday</div></div>
+      <div class="metric-card"><div class="metric-label">Projected month-end</div><div class="metric-value">$26,670</div><div class="metric-desc">Where total spend is likely to land at the current rate</div></div>
+      <div class="metric-card"><div class="metric-label">Warnings</div><div class="metric-value">13</div><div class="metric-desc">Campaigns currently over 100% pace</div></div>
+    </div>
+    <h3>Account groups</h3>
+    <p>Campaigns are grouped by division. Click a division's header to expand or collapse its campaign list.</p>
+    <h3>Campaign table columns</h3>
+    <table class="info-table">
+      <thead><tr><th>Column</th><th>What it shows</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Campaign</strong></td><td>Campaign name, and the date it last received data ("updated 2026-07-06") or "no data".</td></tr>
+        <tr><td><strong>Monthly cap</strong></td><td>Daily budget &times; 30.4, shown with the daily figure underneath.</td></tr>
+        <tr><td><strong>Spent</strong></td><td>Actual cumulative spend for the campaign this month, as of yesterday.</td></tr>
+        <tr><td><strong>Pace</strong></td><td>A bar showing spend as a share of the monthly cap, with a marker showing how far through the month we are.</td></tr>
+        <tr><td><strong>Projected</strong></td><td>Where spend is likely to land by the end of the calendar month, based on the current daily run rate.</td></tr>
+        <tr><td><strong>Status</strong></td><td>Warning / On pace / Watch — see the table above.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section" id="managing">
+    <div class="section-header"><div class="section-num">6</div><h2>Managing Campaigns</h2></div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h3>Open Manage campaigns</h3><p>Click the button in the top bar, then select the tab for the relevant division.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h3>Add a campaign</h3><p>Enter its name and daily budget at the bottom of the list, then click Add.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h3>Change a budget</h3><p>Edit the number directly in the list — it saves automatically.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h3>Remove a campaign</h3><p>Click the bin icon next to it. This also removes its spend history, so use with care.</p></div></div>
+    </div>
+    <div class="callout tip"><span class="callout-icon">💡</span><p>Budgets are stored per calendar month, so changing this month's budget won't affect how past months are shown.</p></div>
+  </div>
+
+  <div class="section" id="faq">
+    <div class="section-header"><div class="section-num">7</div><h2>Common Questions</h2></div>
+    <div class="faq-item"><div class="faq-q">A campaign shows "no data"</div><div class="faq-a">Either the automated script hasn't run yet for that campaign this month, or it's a brand-new campaign not yet picked up. Give it a day and check again.</div></div>
+    <div class="faq-item"><div class="faq-q">A campaign has stopped updating</div><div class="faq-a">Check whether it's still Enabled in Google Ads. Paused or removed campaigns stop being reported, and the tracker will just keep showing their last known figures rather than resetting them to zero.</div></div>
+    <div class="faq-item"><div class="faq-q">The numbers look a day behind</div><div class="faq-a">This is expected — see "Where the Data Comes From" above. The dashboard always reports through yesterday, never live same-day figures.</div></div>
+    <div class="faq-item"><div class="faq-q">I'm signed in, but it says my email isn't on the access list</div><div class="faq-a">Access is restricted to an approved list of Microsoft/Entra sign-ins. Contact Phil Mumford to be added.</div></div>
+    <div class="faq-item"><div class="faq-q">Why does a campaign at 103% pace on day 30 not seem urgent?</div><div class="faq-a">Late in a 31-day month, everything trends slightly "ahead of pace" by design, because the tracker's monthly cap uses Google's 30.4-day average rather than the real day count. A few percent over near month-end is normal drift, not a real problem.</div></div>
+  </div>
+
+</div>
+
+<footer>Budget Pacing Tracker Guide &middot; <span>FMMS</span> &middot; For internal use only</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.faq-q').forEach(function(q) {
+    q.addEventListener('click', function() {
+      this.parentElement.classList.toggle('open');
+    });
+  });
+});
+</script>
+</body>
+</html>
